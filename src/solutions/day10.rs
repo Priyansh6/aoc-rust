@@ -94,7 +94,7 @@ fn min_presses_for_joltages_helper(
             }
         }
         for joltage in residual.iter_mut() {
-            if *joltage < 0 || *joltage % 2 != 0 {
+            if *joltage % 2 != 0 || *joltage < 0 {
                 continue 'candidate_loop;
             }
             *joltage /= 2;
