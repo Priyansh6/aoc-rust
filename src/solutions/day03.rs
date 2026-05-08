@@ -1,8 +1,9 @@
+use std::cmp;
+
 use crate::solutions::Solution;
 use crate::utils;
 use crate::utils::parser;
 use crate::utils::parser::{CharParser, Parser, StrParser};
-use std::cmp;
 
 fn propagate_max_and_set_next_to_zero(slice: &mut [u32], val: u32) {
     let len = slice.len();

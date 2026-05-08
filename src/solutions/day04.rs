@@ -3,7 +3,7 @@ use crate::solutions::Solution;
 use crate::utils::grid::{Grid, GridPosition};
 use crate::utils::parser::Parser;
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(PartialEq, Eq, Copy, Clone)]
 pub enum Square {
     Blank,
     Paper,
@@ -43,8 +43,8 @@ impl Solution for Sol {
         let mut grid: Grid<Square> = grid.clone();
         let mut total_accessible_squares = 0;
         while let accessible_square_positions =
-            get_accessible_paper_positions(&mut grid).collect::<Vec<GridPosition>>()
-            && accessible_square_positions.len() > 0
+            get_accessible_paper_positions(&grid).collect::<Vec<GridPosition>>()
+            && !accessible_square_positions.is_empty()
         {
             for &pos in &accessible_square_positions {
                 grid[pos] = Square::Blank;

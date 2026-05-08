@@ -1,10 +1,11 @@
+use std::collections::{HashMap, HashSet};
+
 use crate::char_match;
 use crate::solutions::Solution;
 use crate::utils::grid::{Grid, GridPosition};
 use crate::utils::parser::Parser;
-use std::collections::{HashMap, HashSet};
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(PartialEq, Eq, Copy, Clone)]
 pub enum Square {
     Blank,
     Source,
@@ -93,7 +94,7 @@ impl Solution for Sol {
         for _ in 0..(manifold.height() - 1) {
             let mut next_beam_pos = HashSet::new();
             for pos in beam_pos {
-                collisions += move_beam_down_part1(&manifold, pos, &mut next_beam_pos);
+                collisions += move_beam_down_part1(manifold, pos, &mut next_beam_pos);
             }
             beam_pos = next_beam_pos;
         }
@@ -107,7 +108,7 @@ impl Solution for Sol {
         for _ in 0..(manifold.height() - 1) {
             let mut next_beam_possibilities = HashMap::new();
             for (pos, possibilities) in beam_possibilities {
-                move_beam_down_part2(&manifold, pos, possibilities, &mut next_beam_possibilities);
+                move_beam_down_part2(manifold, pos, possibilities, &mut next_beam_possibilities);
             }
             beam_possibilities = next_beam_possibilities;
         }

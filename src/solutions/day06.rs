@@ -1,8 +1,9 @@
+use itertools::Itertools;
+
 use crate::solutions::Solution;
 use crate::utils::parser;
 use crate::utils::parser::{CharParser, Parser, StrParser};
 use crate::{char_match, utils};
-use itertools::Itertools;
 
 pub enum Operator {
     Add,
@@ -42,7 +43,7 @@ impl Solution for Sol {
             .parse(num_grid_lines.iter().map(String::as_str))
             .unwrap();
         let num_groups = utils::transpose(num_grid);
-        calculate_sum(&operators, &num_groups).to_string()
+        calculate_sum(operators, &num_groups).to_string()
     }
 
     fn part2(&self, (num_grid_lines, operators): &Self::Parsed) -> String {
@@ -68,7 +69,7 @@ impl Solution for Sol {
             })
             .collect();
 
-        calculate_sum(&operators, &num_groups).to_string()
+        calculate_sum(operators, &num_groups).to_string()
     }
 }
 

@@ -1,9 +1,16 @@
+#![warn(clippy::pedantic)]
+#![warn(clippy::nursery)]
+#![warn(clippy::manual_let_else)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_panics_doc)]
+
+use std::fs;
+use std::time::Instant;
+
 use aoc_lib::solutions::{
     day01, day02, day03, day04, day05, day06, day07, day08, day09, day10, Solution,
 };
 use aoc_lib::utils::parser::Parser;
-use std::fs;
-use std::time::Instant;
 
 macro_rules! run_day {
     ($day:expr, $input:expr, $($num:literal => $sol:expr),+ $(,)?) => {
@@ -32,8 +39,8 @@ fn main() {
     let day: u8 = args.get(1).and_then(|s| s.parse().ok()).unwrap_or(1);
 
     let input =
-        fs::read_to_string(format!("inputs/day{:02}.txt", day)).expect("Input file not found");
-    let input = input.trim_end_matches("\n");
+        fs::read_to_string(format!("inputs/day{day:02}.txt")).expect("Input file not found");
+    let input = input.trim_end_matches('\n');
 
     run_day!(&day, &input,
         1 => day01::Sol,

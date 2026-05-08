@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter, Result};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ParseError {
     EmptyInput,
     NotADigit(char),
@@ -22,31 +22,31 @@ impl Error for ParseError {}
 impl Display for ParseError {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match self {
-            ParseError::EmptyInput => write!(f, "unexpected empty input"),
-            ParseError::NotADigit(c) => write!(f, "expected a digit, got '{c}'"),
-            ParseError::WrongLength {
+            Self::EmptyInput => write!(f, "unexpected empty input"),
+            Self::NotADigit(c) => write!(f, "expected a digit, got '{c}'"),
+            Self::WrongLength {
                 expected,
                 got,
                 input,
             } => {
                 write!(f, "expected {expected} items, got {got} in \"{input}\"")
             }
-            ParseError::NotWrapped { open, close } => {
+            Self::NotWrapped { open, close } => {
                 write!(f, "expected input wrapped in {open} ... {close}")
             }
-            ParseError::Other(msg) => write!(f, "{msg}"),
+            Self::Other(msg) => write!(f, "{msg}"),
         }
     }
 }
 
 impl From<String> for ParseError {
     fn from(s: String) -> Self {
-        ParseError::Other(s)
+        Self::Other(s)
     }
 }
 
 impl From<&str> for ParseError {
     fn from(s: &str) -> Self {
-        ParseError::Other(s.to_string())
+        Self::Other(s.to_string())
     }
 }

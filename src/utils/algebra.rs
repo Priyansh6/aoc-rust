@@ -10,41 +10,42 @@ pub struct GaussianEliminationGF2Result {
 ///
 /// Returns a [`GaussianEliminationResult`] containing the reduced matrix, the indices
 /// of pivot columns (determined variables), and the indices of free columns (free variables).
+#[must_use]
 pub fn gaussian_elimination_gf2(mut matrix: Vec<Vec<bool>>) -> GaussianEliminationGF2Result {
-    let nrows = matrix.len();
-    if nrows == 0 {
+    let num_rows = matrix.len();
+    if num_rows == 0 {
         return GaussianEliminationGF2Result {
             reduced_matrix: matrix,
             pivot_cols: vec![],
             free_cols: vec![],
         };
     }
-    let ncols = matrix[0].len() - 1; // exclude augmented column
+    let num_cols = matrix[0].len() - 1; // exclude augmented column
 
     let mut pivot_cols = vec![];
     let mut free_cols = vec![];
-    let mut row = 0;
+    let mut row_i = 0;
 
-    for col in 0..ncols {
+    for col_i in 0..num_cols {
         // find a pivot row for this column
-        let pivot_row = (row..nrows).find(|&r| matrix[r][col]);
+        let pivot_row = (row_i..num_rows).find(|&r| matrix[r][col_i]);
         let Some(pivot_row) = pivot_row else {
-            free_cols.push(col); // no pivot, this is a free variable
+            free_cols.push(col_i); // no pivot, this is a free variable
             continue;
         };
 
-        matrix.swap(row, pivot_row);
-        pivot_cols.push(col);
+        matrix.swap(row_i, pivot_row);
+        pivot_cols.push(col_i);
 
         // eliminate all other rows with a 1 in this column
-        let pivot = matrix[row].clone();
-        for r in 0..nrows {
-            if r != row && matrix[r][col] {
-                matrix[r].iter_mut().zip(&pivot).for_each(|(a, b)| *a ^= b);
-            }
-        }
+        let pivot = matrix[row_i].clone();
+        matrix
+            .iter_mut()
+            .enumerate()
+            .filter(|(r, row)| *r != row_i && row[col_i])
+            .for_each(|(_, row)| row.iter_mut().zip(&pivot).for_each(|(a, b)| *a ^= b));
 
-        row += 1;
+        row_i += 1;
     }
 
     GaussianEliminationGF2Result {

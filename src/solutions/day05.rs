@@ -31,7 +31,7 @@ impl Solution for Sol {
 
     fn part2(&self, (ranges, _): &Self::Parsed) -> String {
         let mut ranges = ranges.clone();
-        ranges.sort_by_key(|range| range.start().clone());
+        ranges.sort_by_key(|range| *range.start());
 
         let mut merged_ranges: Vec<Range<IdType>> = Vec::new();
 
@@ -47,8 +47,8 @@ impl Solution for Sol {
 
         merged_ranges
             .iter()
-            .map(|range| range.num_elems())
-            .sum::<usize>()
+            .map(Range::num_elems)
+            .sum::<u64>()
             .to_string()
     }
 }

@@ -1,12 +1,13 @@
 #![allow(dead_code)]
 
-use crate::utils::parser;
-use crate::utils::parser::{ParseError, Parser, StrParser};
 use std::cmp;
 use std::cmp::Ordering;
 use std::error::Error;
 use std::fmt::Display;
 use std::str::FromStr;
+
+use crate::utils::parser;
+use crate::utils::parser::{ParseError, Parser, StrParser};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Range<T> {
@@ -26,11 +27,11 @@ impl Display for RangeError {
 impl Error for RangeError {}
 
 impl<T> Range<T> {
-    pub fn start(&self) -> &T {
+    pub const fn start(&self) -> &T {
         &self.start
     }
 
-    pub fn end(&self) -> &T {
+    pub const fn end(&self) -> &T {
         &self.end
     }
 }
@@ -38,17 +39,17 @@ impl<T> Range<T> {
 impl<T: PartialOrd> Range<T> {
     pub fn new(start: T, end: T) -> Result<Self, RangeError> {
         if start <= end {
-            Ok(Range { start, end })
+            Ok(Self { start, end })
         } else {
             Err(RangeError)
         }
     }
 
     pub fn between(a: T, b: T) -> Self {
-        if a.partial_cmp(&b).unwrap() != Ordering::Greater {
-            Range { start: a, end: b }
+        if a.partial_cmp(&b).unwrap() == Ordering::Greater {
+            Self { start: b, end: a }
         } else {
-            Range { start: b, end: a }
+            Self { start: a, end: b }
         }
     }
 
@@ -60,22 +61,23 @@ impl<T: PartialOrd> Range<T> {
         &self.start < x && x < &self.end
     }
 
-    pub fn overlaps(&self, range: &Range<T>) -> bool {
+    pub fn overlaps(&self, range: &Self) -> bool {
         self.start <= range.end && range.start <= self.end
     }
 
-    pub fn overlaps_strictly(&self, range: &Range<T>) -> bool {
+    pub fn overlaps_strictly(&self, range: &Self) -> bool {
         self.start < range.end && range.start < self.end
     }
 }
 
 impl<T: Ord + Copy> Range<T> {
-    pub fn merge(&mut self, range: Range<T>) {
+    pub fn merge(&mut self, range: Self) {
         self.start = cmp::min(self.start, range.start);
         self.end = cmp::max(self.end, range.end);
     }
 
-    pub fn merged_with(mut self, range: Range<T>) -> Self {
+    #[must_use]
+    pub fn merged_with(mut self, range: Self) -> Self {
         self.start = cmp::min(self.start, range.start);
         self.end = cmp::max(self.end, range.end);
         self
@@ -87,15 +89,15 @@ impl Range<u64> {
         self.start..=self.end
     }
 
-    pub fn num_elems(&self) -> usize {
-        (self.end - self.start + 1) as usize
+    #[must_use]
+    pub const fn num_elems(&self) -> u64 {
+        self.end - self.start + 1
     }
 }
 
 impl<T> FromStr for Range<T>
 where
-    T: PartialOrd,
-    T: FromStr,
+    T: PartialOrd + FromStr,
     T::Err: Display,
 {
     type Err = ParseError;
@@ -104,7 +106,7 @@ where
         parser::from_str
             .split_array("-")
             .and_then(|[start, end]| {
-                Range::new(start, end).map_err(|err| ParseError::Other(err.to_string()))
+                Self::new(start, end).map_err(|err| ParseError::Other(err.to_string()))
             })
             .parse(s)
     }

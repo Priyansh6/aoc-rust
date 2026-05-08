@@ -1,36 +1,20 @@
+use itertools::Itertools;
+
 use crate::solutions::Solution;
-use crate::utils::parser;
 use crate::utils::parser::{Parser, StrParser};
 use crate::utils::range::Range;
+use crate::utils::{arithmetic, parser};
 
 type IdType = u64;
 
-fn is_id_invalid_part1(id: &IdType) -> bool {
-    let digits = id.ilog10() + 1;
-    if digits % 2 == 1 {
-        return false;
-    };
-
-    let id_str = id.to_string();
-    let (first_half, second_half) = id_str.split_at(id_str.len() / 2);
-    first_half == second_half
-}
-
-fn is_id_invalid_part2(id: &IdType) -> bool {
-    let digits = id.ilog10() + 1;
-
-    let id_str = id.to_string();
-    let chars: Vec<char> = id_str.chars().collect();
-    for size in (1..digits).filter(|&size| digits % size == 0) {
-        let chunks: Vec<String> = chars
-            .chunks(size as usize)
-            .map(|chunk| chunk.iter().collect())
-            .collect();
-        if chunks.windows(2).all(|w| w[0] == w[1]) {
-            return true;
-        }
-    }
-    false
+fn can_split_into_n_sized_equal_chunks(id: IdType, n: u32) -> bool {
+    let base = 10u64.pow(n);
+    std::iter::successors(Some(id), |&id_quotient| {
+        let next = id_quotient / base;
+        (next > 0).then_some(next)
+    })
+    .map(|n| n % base)
+    .all_equal()
 }
 
 pub struct Sol;
@@ -45,7 +29,16 @@ impl Solution for Sol {
     fn part1(&self, ranges: &Self::Parsed) -> String {
         let mut result = 0;
         for range in ranges {
-            result += range.iter().filter(is_id_invalid_part1).sum::<IdType>();
+            result += range
+                .iter()
+                .filter(|&id| {
+                    let digits = arithmetic::num_digits(id);
+                    if digits % 2 == 1 {
+                        return false;
+                    }
+                    can_split_into_n_sized_equal_chunks(id, digits / 2)
+                })
+                .sum::<IdType>();
         }
         result.to_string()
     }
@@ -53,7 +46,15 @@ impl Solution for Sol {
     fn part2(&self, ranges: &Self::Parsed) -> String {
         let mut result = 0;
         for range in ranges {
-            result += range.iter().filter(is_id_invalid_part2).sum::<IdType>();
+            result += range
+                .iter()
+                .filter(|&id| {
+                    let digits = arithmetic::num_digits(id);
+                    (1..=digits / 2)
+                        .filter(|&size| digits.is_multiple_of(size))
+                        .any(|size| can_split_into_n_sized_equal_chunks(id, size))
+                })
+                .sum::<IdType>();
         }
         result.to_string()
     }

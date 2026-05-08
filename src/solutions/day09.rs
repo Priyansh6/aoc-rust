@@ -1,15 +1,17 @@
+use std::cmp;
+use std::cmp::PartialEq;
+
+use itertools::Itertools;
+
 use crate::solutions::Solution;
 use crate::utils::geometry::Point2;
 use crate::utils::parser::{self, Parser, StrParser};
 use crate::utils::range::Range;
-use itertools::Itertools;
-use std::cmp;
-use std::cmp::PartialEq;
 
 struct Wall {
     orientation: Orientation,
-    anchor: u64,
-    span: Range<u64>,
+    anchor: u32,
+    span: Range<u32>,
 }
 
 #[derive(PartialEq)]
@@ -18,7 +20,7 @@ enum Orientation {
     Vertical,
 }
 
-type RedTile = Point2<u64>;
+type RedTile = Point2<u32>;
 
 fn tiles_to_wall(tiles: (&RedTile, &RedTile)) -> Wall {
     let (t1, t2) = tiles;
@@ -38,8 +40,8 @@ fn tiles_to_wall(tiles: (&RedTile, &RedTile)) -> Wall {
 }
 
 fn rectangle_has_no_cuts(
-    t1: &RedTile,
-    t2: &RedTile,
+    t1: RedTile,
+    t2: RedTile,
     horizontal_walls: &[Wall],
     vertical_walls: &[Wall],
 ) -> bool {
@@ -61,8 +63,9 @@ fn is_in_loop(x: f64, y: f64, horizontal_walls: &[Wall]) -> bool {
     horizontal_walls
         .iter()
         .filter(|wall| {
-            let span = Range::new(*wall.span.start() as f64, *wall.span.end() as f64).unwrap();
-            span.contains(&x) && (wall.anchor as f64) < y
+            let span =
+                Range::new(f64::from(*wall.span.start()), f64::from(*wall.span.end())).unwrap();
+            span.contains(&x) && f64::from(wall.anchor) < y
         })
         .count()
         % 2
@@ -75,7 +78,7 @@ impl Solution for Sol {
     type Parsed = Vec<RedTile>;
 
     fn parser(&self) -> impl Parser<&str, Output = Self::Parsed> {
-        parser::from_str::<u64>
+        parser::from_str::<u32>
             .split_array(",")
             .map(RedTile::new)
             .lines()
@@ -85,7 +88,7 @@ impl Solution for Sol {
         tiles
             .iter()
             .tuple_combinations()
-            .map(|(t1, t2)| t1.inclusive_rect_area(&t2))
+            .map(|(t1, t2)| t1.inclusive_rect_area(t2))
             .max()
             .unwrap()
             .to_string()
@@ -108,12 +111,12 @@ impl Solution for Sol {
                 max_area = cmp::max(max_area, t1.x().abs_diff(t2.x()));
                 continue;
             }
-            if !rectangle_has_no_cuts(t1, t2, &horizontal_walls, &vertical_walls) {
+            if !rectangle_has_no_cuts(*t1, *t2, &horizontal_walls, &vertical_walls) {
                 continue;
             }
             let mid_point = (
-                ((t1.x() + t2.x()) as f64) / 2.0,
-                ((t1.y() + t2.y()) as f64) / 2.0,
+                f64::from(t1.x() + t2.x()) / 2.0,
+                f64::from(t1.y() + t2.y()) / 2.0,
             );
             if is_in_loop(mid_point.0, mid_point.1, &horizontal_walls) {
                 max_area = cmp::max(max_area, t1.inclusive_rect_area(t2));

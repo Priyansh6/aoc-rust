@@ -4,10 +4,11 @@ mod char_parser;
 mod error;
 mod str_parser;
 
-pub use char_parser::CharParser;
-pub use error::ParseError;
 use std::fmt::Display;
 use std::str::FromStr;
+
+pub use char_parser::CharParser;
+pub use error::ParseError;
 pub use str_parser::{lsplit_once, rsplit_once, split_pair, uncons, StrParser};
 
 // === Core Trait ===
@@ -174,7 +175,7 @@ where
 /// Returns the input string slice unchanged.
 ///
 /// Useful as a no-op parser when a `Parser<&str, Output = &str>` is required.
-pub fn as_str(s: &str) -> Result<&str, ParseError> {
+pub const fn as_str(s: &str) -> Result<&str, ParseError> {
     Ok(s)
 }
 
@@ -186,7 +187,7 @@ pub fn as_string(s: &str) -> Result<String, ParseError> {
 /// Returns any input value unchanged, always succeeding.
 ///
 /// The equivalent of [`std::convert::identity`] in parser form.
-pub fn identity<T>(item: T) -> Result<T, ParseError> {
+pub const fn identity<T>(item: T) -> Result<T, ParseError> {
     Ok(item)
 }
 
@@ -194,7 +195,7 @@ pub fn identity<T>(item: T) -> Result<T, ParseError> {
 ///
 /// Useful when a parser is required for its side-structure (e.g. in a combinator)
 /// but the value itself is not needed.
-pub fn unit(_s: &str) -> Result<(), ParseError> {
+pub const fn unit(_s: &str) -> Result<(), ParseError> {
     Ok(())
 }
 

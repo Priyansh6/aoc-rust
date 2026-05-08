@@ -4,6 +4,7 @@ pub struct UnionFind {
 }
 
 impl UnionFind {
+    #[must_use]
     pub fn new(size: usize) -> Self {
         Self {
             parent: (0..size).collect(),

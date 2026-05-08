@@ -1,6 +1,6 @@
 use crate::utils::parser::{CharParser, ParseError, Parser};
 
-/// A [`Parser`] specialised for `&str` inputs, with combinators for splitting and
+/// A [`Parser`] specialized for `&str` inputs, with combinators for splitting and
 /// iterating over string data.
 ///
 /// Any type implementing `Parser<&str>` automatically gains these combinators via the

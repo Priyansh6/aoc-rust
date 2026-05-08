@@ -1,7 +1,8 @@
 #![allow(dead_code)]
 
-use crate::utils::parser::{CharParser, ParseError, Parser, StrParser};
 use std::ops::{Index, IndexMut};
+
+use crate::utils::parser::{CharParser, ParseError, Parser, StrParser};
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 pub struct GridPosition {
@@ -38,26 +39,29 @@ impl<T> Grid<T> {
 
         Ok(Self {
             cells,
-            width,
             height,
+            width,
         })
     }
 
     pub fn parser(
         cell: impl CharParser<Output = T>,
-    ) -> impl for<'a> Parser<&'a str, Output = Grid<T>> {
-        cell.chars().lines().and_then(Grid::from_rows)
+    ) -> impl for<'a> Parser<&'a str, Output = Self> {
+        cell.chars().lines().and_then(Self::from_rows)
     }
 
-    pub fn height(&self) -> usize {
+    #[must_use]
+    pub const fn height(&self) -> usize {
         self.height
     }
 
-    pub fn width(&self) -> usize {
+    #[must_use]
+    pub const fn width(&self) -> usize {
         self.width
     }
 
-    pub fn below(&self, pos: &GridPosition) -> Option<GridPosition> {
+    #[must_use]
+    pub const fn below(&self, pos: &GridPosition) -> Option<GridPosition> {
         let new_y = pos.y + 1;
         if new_y >= self.height {
             return None;
@@ -65,7 +69,8 @@ impl<T> Grid<T> {
         Some(GridPosition { x: pos.x, y: new_y })
     }
 
-    pub fn above(&self, pos: &GridPosition) -> Option<GridPosition> {
+    #[must_use]
+    pub const fn above(&self, pos: &GridPosition) -> Option<GridPosition> {
         if pos.y == 0 {
             return None;
         }
@@ -75,7 +80,8 @@ impl<T> Grid<T> {
         })
     }
 
-    pub fn right(&self, pos: &GridPosition) -> Option<GridPosition> {
+    #[must_use]
+    pub const fn right(&self, pos: &GridPosition) -> Option<GridPosition> {
         let new_x = pos.x + 1;
         if new_x >= self.width {
             return None;
@@ -83,7 +89,8 @@ impl<T> Grid<T> {
         Some(GridPosition { x: new_x, y: pos.y })
     }
 
-    pub fn left(&self, pos: &GridPosition) -> Option<GridPosition> {
+    #[must_use]
+    pub const fn left(&self, pos: &GridPosition) -> Option<GridPosition> {
         if pos.x == 0 {
             return None;
         }

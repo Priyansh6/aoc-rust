@@ -1,9 +1,10 @@
+use itertools::Itertools;
+
 use crate::solutions::Solution;
 use crate::utils::geometry::{self, Point3};
 use crate::utils::parser;
 use crate::utils::parser::{Parser, StrParser};
 use crate::utils::union_find::UnionFind;
-use itertools::Itertools;
 
 pub const NUM_CONNECTIONS_PART_1: usize = 1000;
 
@@ -17,7 +18,7 @@ impl<const NUM_CONNECTIONS: usize> Solution for Sol<NUM_CONNECTIONS> {
     }
 
     fn part1(&self, points: &Self::Parsed) -> String {
-        let pairs = geometry::k_closest_pair_indices(&points, NUM_CONNECTIONS);
+        let pairs = geometry::k_closest_pair_indices(points, NUM_CONNECTIONS);
         let mut union_find = UnionFind::new(points.len());
         for (left, right) in pairs {
             union_find.union(left, right);

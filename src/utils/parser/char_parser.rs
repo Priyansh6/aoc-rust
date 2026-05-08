@@ -1,6 +1,6 @@
 use crate::utils::parser::{ParseError, Parser};
 
-/// A [`Parser`] specialised for `char` inputs, with combinators for bridging into
+/// A [`Parser`] specialized for `char` inputs, with combinators for bridging into
 /// string-slice parsing.
 ///
 /// Any type that already implements `Parser<char>` can implement this trait to gain
@@ -72,7 +72,7 @@ where
     ///
     /// Returns [`ParseError::EmptyInput`] if `input` is empty, or
     /// [`ParseError::WrongLength`] if `input` contains more than one character.
-    /// Otherwise delegates to the inner parser.
+    /// Otherwise, delegates to the inner parser.
     fn parse(&self, input: &str) -> Result<Self::Output, ParseError> {
         let mut chars = input.chars();
         let c = chars.next().ok_or(ParseError::EmptyInput)?;

@@ -1,14 +1,16 @@
+use std::collections::HashMap;
+
+use itertools::Itertools;
+
 use crate::solutions::Solution;
 use crate::utils::algebra::GaussianEliminationGF2Result;
 use crate::utils::parser::{lsplit_once, rsplit_once, CharParser, Parser, StrParser};
 use crate::utils::{algebra, parser};
 use crate::{char_match, utils};
-use itertools::Itertools;
-use std::collections::HashMap;
 
 pub struct Sol;
 
-fn expand_schematics(schematics: &Vec<Vec<usize>>, num_indicators: usize) -> Vec<Vec<bool>> {
+fn expand_schematics(schematics: &[Vec<usize>], num_indicators: usize) -> Vec<Vec<bool>> {
     schematics
         .iter()
         .map(|schematic| {
@@ -22,11 +24,11 @@ fn expand_schematics(schematics: &Vec<Vec<usize>>, num_indicators: usize) -> Vec
 }
 
 fn get_possible_presses_for_indicators(
-    schematics_bool: &Vec<Vec<bool>>,
-    indicators: &Vec<bool>,
+    schematics_bool: &[Vec<bool>],
+    indicators: &[bool],
 ) -> impl Iterator<Item = Vec<usize>> {
-    let mut schematics_bool = schematics_bool.clone();
-    schematics_bool.push(indicators.clone());
+    let mut schematics_bool = schematics_bool.to_vec();
+    schematics_bool.push(indicators.to_vec());
     let matrix = utils::transpose(schematics_bool);
 
     let GaussianEliminationGF2Result {
@@ -80,9 +82,10 @@ fn min_presses_for_joltages_helper(
     if let Some(&cached) = cache.get(joltages) {
         return cached;
     }
-    let joltage_parity = joltages.iter().map(|&j| j % 2 == 1).collect_vec();
 
+    let joltage_parity = joltages.iter().map(|&j| j % 2 == 1).collect_vec();
     let mut min_cost = u64::MAX;
+
     'candidate_loop: for button_indices in
         get_possible_presses_for_indicators(schematics_bool, &joltage_parity)
     {
@@ -93,15 +96,15 @@ fn min_presses_for_joltages_helper(
                 residual[counter_i] -= 1;
             }
         }
-        for joltage in residual.iter_mut() {
+        for joltage in &mut residual {
             if *joltage % 2 != 0 || *joltage < 0 {
                 continue 'candidate_loop;
             }
             *joltage /= 2;
         }
-        let subcost =
+        let sub_cost =
             min_presses_for_joltages_helper(&residual, schematics_bool, schematics_idx, cache);
-        let cost = subcost.saturating_mul(2).saturating_add(num_presses);
+        let cost = sub_cost.saturating_mul(2).saturating_add(num_presses);
         min_cost = min_cost.min(cost);
     }
 
@@ -148,7 +151,7 @@ impl Solution for Sol {
         let mut sum_presses = 0;
         for (_, schematics, requirements) in machines {
             let schematics_bool = expand_schematics(schematics, requirements.len());
-            sum_presses += min_presses_for_joltages(&requirements, &schematics_bool, schematics)
+            sum_presses += min_presses_for_joltages(requirements, &schematics_bool, schematics);
         }
         sum_presses.to_string()
     }
