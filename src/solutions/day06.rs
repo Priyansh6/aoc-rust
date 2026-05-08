@@ -41,7 +41,7 @@ impl Solution for Sol {
             .into_each()
             .parse(num_grid_lines.iter().map(String::as_str))
             .unwrap();
-        let num_groups = utils::row_to_column_major(num_grid);
+        let num_groups = utils::transpose(num_grid);
         calculate_sum(&operators, &num_groups).to_string()
     }
 
@@ -52,7 +52,7 @@ impl Solution for Sol {
             .parse(num_grid_lines.iter().map(String::as_str))
             .unwrap();
         // Convert grid to column-major format as characters
-        let col_major_char_grid: Vec<Vec<char>> = utils::row_to_column_major(char_grid);
+        let col_major_char_grid: Vec<Vec<char>> = utils::transpose(char_grid);
 
         // Group columns by empty spaces to form number groups
         let num_groups: Vec<Vec<u64>> = col_major_char_grid

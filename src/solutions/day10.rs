@@ -4,16 +4,12 @@ use crate::utils::parser::{lsplit_once, rsplit_once, CharParser, Parser, StrPars
 use crate::utils::{algebra, parser};
 use crate::{char_match, utils};
 use itertools::Itertools;
+use std::collections::HashMap;
 
 pub struct Sol;
 
-fn get_possible_presses_for_indicators(
-    schematics: &Vec<Vec<usize>>,
-    indicators: &Vec<bool>,
-) -> impl Iterator<Item = Vec<usize>> {
-    let num_indicators = indicators.len();
-
-    let mut schematics = schematics
+fn expand_schematics(schematics: &Vec<Vec<usize>>, num_indicators: usize) -> Vec<Vec<bool>> {
+    schematics
         .iter()
         .map(|schematic| {
             let mut schematic_vector = vec![false; num_indicators];
@@ -22,9 +18,16 @@ fn get_possible_presses_for_indicators(
             }
             schematic_vector
         })
-        .collect_vec();
-    schematics.push(indicators.clone());
-    let matrix = utils::row_to_column_major(schematics);
+        .collect_vec()
+}
+
+fn get_possible_presses_for_indicators(
+    schematics_bool: &Vec<Vec<bool>>,
+    indicators: &Vec<bool>,
+) -> impl Iterator<Item = Vec<usize>> {
+    let mut schematics_bool = schematics_bool.clone();
+    schematics_bool.push(indicators.clone());
+    let matrix = utils::transpose(schematics_bool);
 
     let GaussianEliminationGF2Result {
         reduced_matrix,
@@ -58,8 +61,56 @@ fn get_possible_presses_for_indicators(
         })
 }
 
+fn min_presses_for_joltages(
+    joltages: &Vec<i64>,
+    schematics_bool: &Vec<Vec<bool>>,
+    schematics_idx: &Vec<Vec<usize>>,
+) -> u64 {
+    let mut cache = HashMap::new();
+    cache.insert(vec![0; joltages.len()], 0);
+    min_presses_for_joltages_helper(joltages, schematics_bool, schematics_idx, &mut cache)
+}
+
+fn min_presses_for_joltages_helper(
+    joltages: &Vec<i64>,
+    schematics_bool: &Vec<Vec<bool>>,
+    schematics_idx: &Vec<Vec<usize>>,
+    cache: &mut HashMap<Vec<i64>, u64>,
+) -> u64 {
+    if let Some(&cached) = cache.get(joltages) {
+        return cached;
+    }
+    let joltage_parity = joltages.iter().map(|&j| j % 2 == 1).collect_vec();
+
+    let mut min_cost = u64::MAX;
+    'candidate_loop: for button_indices in
+        get_possible_presses_for_indicators(schematics_bool, &joltage_parity)
+    {
+        let mut residual = joltages.clone();
+        let num_presses = button_indices.len() as u64;
+        for button_i in button_indices {
+            for &counter_i in &schematics_idx[button_i] {
+                residual[counter_i] -= 1;
+            }
+        }
+        for joltage in residual.iter_mut() {
+            if *joltage < 0 || *joltage % 2 != 0 {
+                continue 'candidate_loop;
+            }
+            *joltage /= 2;
+        }
+        let subcost =
+            min_presses_for_joltages_helper(&residual, schematics_bool, schematics_idx, cache);
+        let cost = subcost.saturating_mul(2).saturating_add(num_presses);
+        min_cost = min_cost.min(cost);
+    }
+
+    cache.insert(joltages.clone(), min_cost);
+    min_cost
+}
+
 impl Solution for Sol {
-    type Parsed = Vec<(Vec<bool>, Vec<Vec<usize>>, Vec<usize>)>;
+    type Parsed = Vec<(Vec<bool>, Vec<Vec<usize>>, Vec<i64>)>;
 
     fn parser(&self) -> impl Parser<&str, Output = Self::Parsed> {
         let indicator = char_match! {
@@ -71,7 +122,7 @@ impl Solution for Sol {
             .split(",")
             .wrapped("(", ")")
             .split(" ");
-        let requirement_parser = parser::from_str::<usize>.split(",").wrapped("{", "}");
+        let requirement_parser = parser::from_str::<i64>.split(",").wrapped("{", "}");
         lsplit_once(
             indicator_parser,
             rsplit_once(schematic_parser, requirement_parser, " "),
@@ -84,7 +135,8 @@ impl Solution for Sol {
     fn part1(&self, machines: &Self::Parsed) -> String {
         let mut sum_presses = 0;
         for (indicators, schematics, _) in machines {
-            sum_presses += get_possible_presses_for_indicators(&schematics, &indicators)
+            let schematics = expand_schematics(schematics, indicators.len());
+            sum_presses += get_possible_presses_for_indicators(&schematics, indicators)
                 .map(|presses| presses.len())
                 .min()
                 .unwrap();
@@ -93,7 +145,12 @@ impl Solution for Sol {
     }
 
     fn part2(&self, machines: &Self::Parsed) -> String {
-        todo!()
+        let mut sum_presses = 0;
+        for (_, schematics, requirements) in machines {
+            let schematics_bool = expand_schematics(schematics, requirements.len());
+            sum_presses += min_presses_for_joltages(&requirements, &schematics_bool, schematics)
+        }
+        sum_presses.to_string()
     }
 }
 

@@ -15,7 +15,7 @@ pub fn digits_to_num(digits: &[u32]) -> u64 {
     result
 }
 
-pub fn row_to_column_major<T>(rows: Vec<Vec<T>>) -> Vec<Vec<T>> {
+pub fn transpose<T>(rows: Vec<Vec<T>>) -> Vec<Vec<T>> {
     if rows.is_empty() {
         return Vec::new();
     }
