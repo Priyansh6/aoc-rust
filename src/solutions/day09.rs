@@ -1,3 +1,5 @@
+#![allow(clippy::cast_precision_loss)]
+
 use std::cmp;
 use std::cmp::PartialEq;
 
@@ -10,8 +12,8 @@ use crate::utils::range::Range;
 
 struct Wall {
     orientation: Orientation,
-    anchor: u32,
-    span: Range<u32>,
+    anchor: u64,
+    span: Range<u64>,
 }
 
 #[derive(PartialEq)]
@@ -20,7 +22,7 @@ enum Orientation {
     Vertical,
 }
 
-type RedTile = Point2<u32>;
+type RedTile = Point2<u64>;
 
 fn tiles_to_wall(tiles: (&RedTile, &RedTile)) -> Wall {
     let (t1, t2) = tiles;
@@ -63,9 +65,8 @@ fn is_in_loop(x: f64, y: f64, horizontal_walls: &[Wall]) -> bool {
     horizontal_walls
         .iter()
         .filter(|wall| {
-            let span =
-                Range::new(f64::from(*wall.span.start()), f64::from(*wall.span.end())).unwrap();
-            span.contains(&x) && f64::from(wall.anchor) < y
+            let span = Range::new(*wall.span.start() as f64, *wall.span.end() as f64).unwrap();
+            span.contains(&x) && (wall.anchor as f64) < y
         })
         .count()
         % 2
@@ -78,7 +79,7 @@ impl Solution for Sol {
     type Parsed = Vec<RedTile>;
 
     fn parser(&self) -> impl Parser<&str, Output = Self::Parsed> {
-        parser::from_str::<u32>
+        parser::from_str::<u64>
             .split_array(",")
             .map(RedTile::new)
             .lines()
@@ -115,8 +116,8 @@ impl Solution for Sol {
                 continue;
             }
             let mid_point = (
-                f64::from(t1.x() + t2.x()) / 2.0,
-                f64::from(t1.y() + t2.y()) / 2.0,
+                (t1.x() + t2.x()) as f64 / 2.0,
+                (t1.y() + t2.y()) as f64 / 2.0,
             );
             if is_in_loop(mid_point.0, mid_point.1, &horizontal_walls) {
                 max_area = cmp::max(max_area, t1.inclusive_rect_area(t2));

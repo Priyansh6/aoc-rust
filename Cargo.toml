@@ -8,6 +8,7 @@ name = "aoc_lib"
 
 [dependencies]
 itertools = "0.14"
+bitvec = "1.0"
 
 [profile.release]
 lto = true

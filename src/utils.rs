@@ -1,6 +1,7 @@
 pub mod algebra;
 pub mod arithmetic;
 pub mod geometry;
+pub mod graph;
 pub mod grid;
 pub mod parser;
 pub mod range;

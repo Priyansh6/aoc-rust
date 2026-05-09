@@ -8,8 +8,6 @@ use crate::utils::parser::{lsplit_once, rsplit_once, CharParser, Parser, StrPars
 use crate::utils::{algebra, parser};
 use crate::{char_match, utils};
 
-pub struct Sol;
-
 fn expand_schematics(schematics: &[Vec<usize>], num_indicators: usize) -> Vec<Vec<bool>> {
     schematics
         .iter()
@@ -112,6 +110,8 @@ fn min_presses_for_joltages_helper(
     min_cost
 }
 
+pub struct Sol;
+
 impl Solution for Sol {
     type Parsed = Vec<(Vec<bool>, Vec<Vec<usize>>, Vec<i64>)>;
 
@@ -124,7 +124,7 @@ impl Solution for Sol {
         let schematic_parser = parser::from_str::<usize>
             .split(",")
             .wrapped("(", ")")
-            .split(" ");
+            .split_whitespace();
         let requirement_parser = parser::from_str::<i64>.split(",").wrapped("{", "}");
         lsplit_once(
             indicator_parser,
