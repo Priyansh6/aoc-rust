@@ -1,3 +1,15 @@
+pub fn transpose<T>(rows: Vec<Vec<T>>) -> Vec<Vec<T>> {
+    if rows.is_empty() {
+        return Vec::new();
+    }
+    let num_cols = rows[0].len();
+    let mut row_iters: Vec<_> = rows.into_iter().map(IntoIterator::into_iter).collect();
+
+    (0..num_cols)
+        .map(|_| row_iters.iter_mut().filter_map(Iterator::next).collect())
+        .collect()
+}
+
 pub struct GaussianEliminationGF2Result {
     pub reduced_matrix: Vec<Vec<bool>>,
     pub pivot_cols: Vec<usize>,

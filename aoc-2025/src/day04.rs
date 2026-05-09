@@ -1,7 +1,7 @@
-use crate::char_match;
-use crate::solutions::Solution;
-use crate::utils::grid::{Grid, GridPosition};
-use crate::utils::parser::Parser;
+use aoc_lib::char_match;
+use aoc_lib::solution::Solution;
+use aoc_lib::grid::{Grid, GridPosition};
+use aoc_lib::parser::Parser;
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub enum Square {
@@ -58,7 +58,7 @@ impl Solution for Sol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::solutions::{check_part1, check_part2};
+    use aoc_lib::solution::{check_part1, check_part2};
 
     const TEST_INPUT: &str = "..@@.@@@@.
 @@@.@.@.@@

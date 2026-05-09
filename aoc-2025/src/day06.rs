@@ -1,9 +1,9 @@
 use itertools::Itertools;
 
-use crate::solutions::Solution;
-use crate::utils::parser;
-use crate::utils::parser::{CharParser, Parser, StrParser};
-use crate::{char_match, utils};
+use aoc_lib::solution::Solution;
+use aoc_lib::{algebra, parser};
+use aoc_lib::parser::{CharParser, Parser, StrParser};
+use aoc_lib::char_match;
 
 pub enum Operator {
     Add,
@@ -42,7 +42,7 @@ impl Solution for Sol {
             .into_each()
             .parse(num_grid_lines.iter().map(String::as_str))
             .unwrap();
-        let num_groups = utils::transpose(num_grid);
+        let num_groups = algebra::transpose(num_grid);
         calculate_sum(operators, &num_groups).to_string()
     }
 
@@ -53,7 +53,7 @@ impl Solution for Sol {
             .parse(num_grid_lines.iter().map(String::as_str))
             .unwrap();
         // Convert grid to column-major format as characters
-        let col_major_char_grid: Vec<Vec<char>> = utils::transpose(char_grid);
+        let col_major_char_grid: Vec<Vec<char>> = algebra::transpose(char_grid);
 
         // Group columns by empty spaces to form number groups
         let num_groups: Vec<Vec<u64>> = col_major_char_grid
@@ -76,7 +76,7 @@ impl Solution for Sol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::solutions::{check_part1, check_part2};
+    use aoc_lib::solution::{check_part1, check_part2};
 
     const TEST_INPUT: &str = concat!(
         "123 328  51 64 \n",

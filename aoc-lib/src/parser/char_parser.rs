@@ -1,4 +1,4 @@
-use crate::utils::parser::{ParseError, Parser};
+use crate::parser::{ParseError, Parser};
 
 /// A [`Parser`] specialized for `char` inputs, with combinators for bridging into
 /// string-slice parsing.
@@ -139,7 +139,7 @@ macro_rules! char_match {
     ($($c:literal => $val:expr),+ $(,)?) => {
         |c: char| match c {
             $($c => Ok($val),)+
-            _ => Err($crate::utils::parser::ParseError::Other(
+            _ => Err($crate::parser::ParseError::Other(
                 format!("Unexpected character: '{c}'")
             ))
         }

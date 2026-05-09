@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use crate::solutions::Solution;
-use crate::utils::graph::{Directed, Graph};
-use crate::utils::parser;
-use crate::utils::parser::{Parser, StrParser};
+use aoc_lib::solution::Solution;
+use aoc_lib::graph::{Directed, Graph};
+use aoc_lib::parser;
+use aoc_lib::parser::{Parser, StrParser};
 
 fn construct_graph_and_index_map(
     devices: &Vec<(String, Vec<String>)>,
@@ -65,7 +65,8 @@ impl Solution for Sol {
 
 #[cfg(test)]
 mod tests {
-    use crate::solutions::{check_part1, check_part2};
+    use super::*;
+    use aoc_lib::solution::{check_part1, check_part2};
 
     const TEST_INPUT_PART_1: &str = "aaa: you hhh
 you: bbb ccc
@@ -94,11 +95,11 @@ hhh: out";
 
     #[test]
     fn test_part1() {
-        check_part1(&crate::solutions::day11::Sol, TEST_INPUT_PART_1, "5");
+        check_part1(&Sol, TEST_INPUT_PART_1, "5");
     }
 
     #[test]
     fn test_part2() {
-        check_part2(&crate::solutions::day11::Sol, TEST_INPUT_PART_2, "2");
+        check_part2(&Sol, TEST_INPUT_PART_2, "2");
     }
 }

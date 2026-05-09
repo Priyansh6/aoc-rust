@@ -2,7 +2,7 @@
 
 use std::ops::{Index, IndexMut};
 
-use crate::utils::parser::{CharParser, ParseError, Parser, StrParser};
+use crate::parser::{CharParser, ParseError, Parser, StrParser};
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 pub struct GridPosition {

@@ -2,11 +2,11 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::solutions::Solution;
-use crate::utils::algebra::GaussianEliminationGF2Result;
-use crate::utils::parser::{lsplit_once, rsplit_once, CharParser, Parser, StrParser};
-use crate::utils::{algebra, parser};
-use crate::{char_match, utils};
+use aoc_lib::solution::Solution;
+use aoc_lib::algebra::GaussianEliminationGF2Result;
+use aoc_lib::parser::{lsplit_once, rsplit_once, CharParser, Parser, StrParser};
+use aoc_lib::{algebra, parser};
+use aoc_lib::char_match;
 
 fn expand_schematics(schematics: &[Vec<usize>], num_indicators: usize) -> Vec<Vec<bool>> {
     schematics
@@ -27,7 +27,7 @@ fn get_possible_presses_for_indicators(
 ) -> impl Iterator<Item = Vec<usize>> {
     let mut schematics_bool = schematics_bool.to_vec();
     schematics_bool.push(indicators.to_vec());
-    let matrix = utils::transpose(schematics_bool);
+    let matrix = algebra::transpose(schematics_bool);
 
     let GaussianEliminationGF2Result {
         reduced_matrix,
@@ -159,7 +159,8 @@ impl Solution for Sol {
 
 #[cfg(test)]
 mod tests {
-    use crate::solutions::{check_part1, check_part2};
+    use super::*;
+    use aoc_lib::solution::{check_part1, check_part2};
 
     const TEST_INPUT: &str = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
@@ -167,11 +168,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        check_part1(&crate::solutions::day10::Sol, TEST_INPUT, "7");
+        check_part1(&Sol, TEST_INPUT, "7");
     }
 
     #[test]
     fn test_part2() {
-        check_part2(&crate::solutions::day10::Sol, TEST_INPUT, "33");
+        check_part2(&Sol, TEST_INPUT, "33");
     }
 }

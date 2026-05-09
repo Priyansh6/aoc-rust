@@ -1,13 +1,12 @@
-[package]
-name = "aoc-2025-rust"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+members = ["aoc-lib", "aoc-2025", "runner"]
+resolver = "3"
 
-[lib]
-name = "aoc_lib"
-
-[dependencies]
-itertools = "0.14"
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 
 [profile.release]
 lto = true

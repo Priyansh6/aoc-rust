@@ -6,8 +6,8 @@ use std::error::Error;
 use std::fmt::Display;
 use std::str::FromStr;
 
-use crate::utils::parser;
-use crate::utils::parser::{ParseError, Parser, StrParser};
+use crate::parser;
+use crate::parser::{ParseError, Parser, StrParser};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Range<T> {

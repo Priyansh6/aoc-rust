@@ -1,7 +1,7 @@
-use crate::char_match;
-use crate::solutions::Solution;
-use crate::utils::parser;
-use crate::utils::parser::{Parser, StrParser};
+use aoc_lib::char_match;
+use aoc_lib::solution::Solution;
+use aoc_lib::parser;
+use aoc_lib::parser::{Parser, StrParser};
 
 const DIAL_NUMBERS: i32 = 100;
 const STARTING_NUMBER: i32 = 50;
@@ -81,7 +81,7 @@ impl Solution for Sol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::solutions::{check_part1, check_part2};
+    use aoc_lib::solution::{check_part1, check_part2};
 
     const TEST_INPUT: &str = "L68
 L30

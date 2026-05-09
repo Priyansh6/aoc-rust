@@ -5,8 +5,8 @@ use std::str::FromStr;
 
 use itertools::Itertools;
 
-use crate::utils::parser;
-use crate::utils::parser::{ParseError, Parser, StrParser};
+use crate::parser;
+use crate::parser::{ParseError, Parser, StrParser};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Vector<T, const N: usize> {

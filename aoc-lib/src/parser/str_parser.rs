@@ -1,4 +1,4 @@
-use crate::utils::parser::{CharParser, ParseError, Parser};
+use crate::parser::{CharParser, ParseError, Parser};
 
 /// A [`Parser`] specialized for `&str` inputs, with combinators for splitting and
 /// iterating over string data.

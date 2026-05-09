@@ -5,10 +5,10 @@ use std::cmp::PartialEq;
 
 use itertools::Itertools;
 
-use crate::solutions::Solution;
-use crate::utils::geometry::Point2;
-use crate::utils::parser::{self, Parser, StrParser};
-use crate::utils::range::Range;
+use aoc_lib::solution::Solution;
+use aoc_lib::geometry::Point2;
+use aoc_lib::parser::{self, Parser, StrParser};
+use aoc_lib::range::Range;
 
 struct Wall {
     orientation: Orientation,
@@ -130,7 +130,7 @@ impl Solution for Sol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::solutions::{check_part1, check_part2};
+    use aoc_lib::solution::{check_part1, check_part2};
 
     const TEST_INPUT: &str = "7,1
 11,1

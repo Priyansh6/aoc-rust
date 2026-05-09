@@ -1,7 +1,7 @@
-use crate::solutions::Solution;
-use crate::utils::parser;
-use crate::utils::parser::{Parser, StrParser};
-use crate::utils::range::Range;
+use aoc_lib::solution::Solution;
+use aoc_lib::parser;
+use aoc_lib::parser::{Parser, StrParser};
+use aoc_lib::range::Range;
 
 type IdType = u64;
 
@@ -56,7 +56,7 @@ impl Solution for Sol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::solutions::{check_part1, check_part2};
+    use aoc_lib::solution::{check_part1, check_part2};
 
     const TEST_INPUT: &str = "3-5
 10-14
