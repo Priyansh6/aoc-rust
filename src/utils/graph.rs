@@ -53,10 +53,10 @@ impl<T> Graph<T, Directed> {
         must_visit: &[usize],
         cache: &mut HashMap<(usize, u32), u64>,
     ) -> u64 {
-        let new_mask = match must_visit.iter().position(|&n| n == from) {
-            Some(i) => visited_mask | (1 << i),
-            None => visited_mask,
-        };
+        let new_mask = must_visit
+            .iter()
+            .position(|&n| n == from)
+            .map_or(visited_mask, |i| visited_mask | (1 << i));
 
         if from == to {
             let all_visited = (1u32 << must_visit.len()) - 1;
