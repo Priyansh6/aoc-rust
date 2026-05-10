@@ -1,8 +1,9 @@
 use std::path::{Path, PathBuf};
-use clap::{Parser, Subcommand};
-use reqwest::blocking::Client;
+
 use aoc_2025::AOCYear2025;
 use aoc_lib::year::AOCYear;
+use clap::{Parser, Subcommand};
+use reqwest::blocking::Client;
 
 #[derive(Parser)]
 #[command(name = "aoc", about = "Advent of Code runner")]
@@ -46,7 +47,10 @@ fn run(year: u32, day: Option<u8>) {
 
     if let Some(day) = day {
         if day > aoc_year.num_days() {
-            eprintln!("Day {day} is out of range for year {year} (max: {})", aoc_year.num_days());
+            eprintln!(
+                "Day {day} is out of range for year {year} (max: {})",
+                aoc_year.num_days()
+            );
             std::process::exit(1);
         }
         let input = read_input(year, day);
@@ -95,7 +99,10 @@ fn download_day(client: &Client, session: &str, year: u32, day: u8, path: &Path)
     let res = client
         .get(&url)
         .header("Cookie", format!("session={session}"))
-        .header("User-Agent", "github.com/yourname/aoc-runner by you@example.com")
+        .header(
+            "User-Agent",
+            "github.com/yourname/aoc-runner by you@example.com",
+        )
         .send();
 
     match res {

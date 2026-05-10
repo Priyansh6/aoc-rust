@@ -1,12 +1,10 @@
 use std::collections::HashMap;
 
-use itertools::Itertools;
-
-use aoc_lib::solution::Solution;
 use aoc_lib::algebra::GaussianEliminationGF2Result;
-use aoc_lib::parser::{lsplit_once, rsplit_once, CharParser, Parser, StrParser};
-use aoc_lib::{algebra, parser};
-use aoc_lib::char_match;
+use aoc_lib::parser::{CharParser, Parser, StrParser, lsplit_once, rsplit_once};
+use aoc_lib::solution::Solution;
+use aoc_lib::{algebra, char_match, parser};
+use itertools::Itertools;
 
 fn expand_schematics(schematics: &[Vec<usize>], num_indicators: usize) -> Vec<Vec<bool>> {
     schematics
@@ -159,8 +157,9 @@ impl Solution for Sol {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use aoc_lib::solution::{check_part1, check_part2};
+
+    use super::*;
 
     const TEST_INPUT: &str = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}

@@ -1,9 +1,7 @@
-use itertools::Itertools;
-
-use aoc_lib::solution::Solution;
-use aoc_lib::{algebra, parser};
 use aoc_lib::parser::{CharParser, Parser, StrParser};
-use aoc_lib::char_match;
+use aoc_lib::solution::Solution;
+use aoc_lib::{algebra, char_match, parser};
+use itertools::Itertools;
 
 pub enum Operator {
     Add,
@@ -75,8 +73,9 @@ impl Solution for Sol {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use aoc_lib::solution::{check_part1, check_part2};
+
+    use super::*;
 
     const TEST_INPUT: &str = concat!(
         "123 328  51 64 \n",

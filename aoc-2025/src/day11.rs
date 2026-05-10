@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use aoc_lib::solution::Solution;
 use aoc_lib::graph::{Directed, Graph};
 use aoc_lib::parser;
 use aoc_lib::parser::{Parser, StrParser};
+use aoc_lib::solution::Solution;
 
 fn construct_graph_and_index_map(
     devices: &Vec<(String, Vec<String>)>,
@@ -65,8 +65,9 @@ impl Solution for Sol {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use aoc_lib::solution::{check_part1, check_part2};
+
+    use super::*;
 
     const TEST_INPUT_PART_1: &str = "aaa: you hhh
 you: bbb ccc

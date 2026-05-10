@@ -12,6 +12,7 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 
 pub struct AOCYear2025;
 
@@ -33,6 +34,7 @@ impl AOCYear for AOCYear2025 {
             9 => run_solution(9, input, &day09::Sol),
             10 => run_solution(10, input, &day10::Sol),
             11 => run_solution(11, input, &day11::Sol),
+            12 => run_solution(12, input, &day12::Sol),
             _ => eprintln!("Day {day} is not implemented"),
         }
     }

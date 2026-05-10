@@ -9,7 +9,7 @@ use std::str::FromStr;
 
 pub use char_parser::CharParser;
 pub use error::ParseError;
-pub use str_parser::{lsplit_once, rsplit_once, split_pair, uncons, StrParser};
+pub use str_parser::{StrParser, lsplit_once, rsplit_once, split_pair, uncons};
 
 // === Core Trait ===
 

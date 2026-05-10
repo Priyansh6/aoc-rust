@@ -1,4 +1,5 @@
 use std::time::Instant;
+
 use crate::parser::Parser;
 
 pub trait Solution {

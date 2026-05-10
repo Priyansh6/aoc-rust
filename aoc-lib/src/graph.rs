@@ -77,8 +77,13 @@ impl<T> Graph<T, Directed> {
         count
     }
 
+    /// Only works if there are 31 or fewer nodes in `must_visit`. Will panic otherwise.
     #[must_use]
     pub fn num_paths_through_dag(&self, from: usize, to: usize, must_visit: &[usize]) -> u64 {
+        assert!(
+            must_visit.len() <= 31,
+            "Cannot have more than 31 nodes to visit"
+        );
         self.num_paths_through_dag_helper(from, to, 0, must_visit, &mut HashMap::new())
     }
 }

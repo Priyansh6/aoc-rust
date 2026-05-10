@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use std::fmt;
+use std::fmt::{Debug, Formatter};
 use std::ops::{Index, IndexMut};
 
 use crate::parser::{CharParser, ParseError, Parser, StrParser};
@@ -18,6 +20,19 @@ pub struct Grid<T> {
 }
 
 impl<T> Grid<T> {
+    pub fn new(rows: usize, cols: usize, value: T) -> Self
+    where
+        T: Clone,
+    {
+        assert!(rows > 0, "Grid cannot have height 0");
+        assert!(cols > 0, "Grid cannot have width 0");
+        Self {
+            cells: vec![vec![value; cols]; rows],
+            height: rows,
+            width: cols,
+        }
+    }
+
     fn from_rows<I, J>(rows: I) -> Result<Self, ParseError>
     where
         I: IntoIterator<Item = J>,
@@ -48,6 +63,18 @@ impl<T> Grid<T> {
         cell: impl CharParser<Output = T>,
     ) -> impl for<'a> Parser<&'a str, Output = Self> {
         cell.chars().lines().and_then(Self::from_rows)
+    }
+
+    pub fn map<U>(&self, f: impl Fn(&T) -> U) -> Grid<U> {
+        Grid {
+            cells: self
+                .cells
+                .iter()
+                .map(|row| row.iter().map(&f).collect())
+                .collect(),
+            height: self.height,
+            width: self.width,
+        }
     }
 
     #[must_use]
@@ -157,5 +184,43 @@ impl<T> Index<GridPosition> for Grid<T> {
 impl<T> IndexMut<GridPosition> for Grid<T> {
     fn index_mut(&mut self, pos: GridPosition) -> &mut Self::Output {
         &mut self.cells[pos.y][pos.x]
+    }
+}
+
+impl<T: Debug> Debug for Grid<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        // Collect all values as strings first so we can measure column widths
+        let cells: Vec<Vec<String>> = (0..self.height)
+            .map(|y| {
+                (0..self.width)
+                    .map(|x| format!("{:?}", self[GridPosition { x, y }]))
+                    .collect()
+            })
+            .collect();
+
+        let col_widths: Vec<usize> = (0..self.width)
+            .map(|x| cells.iter().map(|row| row[x].len()).max().unwrap_or(0))
+            .collect();
+
+        let row_sep = format!(
+            "+{}+",
+            col_widths
+                .iter()
+                .map(|w| "-".repeat(w + 2))
+                .collect::<Vec<_>>()
+                .join("+")
+        );
+
+        writeln!(f)?;
+        writeln!(f, "{row_sep}")?;
+        for row in &cells {
+            write!(f, "|")?;
+            for (val, w) in row.iter().zip(&col_widths) {
+                write!(f, " {val:>w$} |")?;
+            }
+            writeln!(f)?;
+            writeln!(f, "{row_sep}")?;
+        }
+        Ok(())
     }
 }

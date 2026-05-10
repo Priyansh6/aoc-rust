@@ -1,9 +1,8 @@
-use itertools::Itertools;
-
-use aoc_lib::solution::Solution;
 use aoc_lib::parser::{Parser, StrParser};
 use aoc_lib::range::Range;
+use aoc_lib::solution::Solution;
 use aoc_lib::{arithmetic, parser};
+use itertools::Itertools;
 
 type IdType = u64;
 
@@ -62,8 +61,9 @@ impl Solution for Sol {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use aoc_lib::solution::{check_part1, check_part2};
+
+    use super::*;
 
     const TEST_INPUT: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
 

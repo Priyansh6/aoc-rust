@@ -1,10 +1,9 @@
-use itertools::Itertools;
-
-use aoc_lib::solution::Solution;
 use aoc_lib::geometry::{self, Point3};
 use aoc_lib::parser;
 use aoc_lib::parser::{Parser, StrParser};
+use aoc_lib::solution::Solution;
 use aoc_lib::union_find::UnionFind;
+use itertools::Itertools;
 
 pub const NUM_CONNECTIONS_PART_1: usize = 1000;
 
@@ -51,8 +50,9 @@ impl<const NUM_CONNECTIONS: usize> Solution for Sol<NUM_CONNECTIONS> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use aoc_lib::solution::{check_part1, check_part2};
+
+    use super::*;
 
     const TEST_NUM_CONNECTIONS_PART_1: usize = 10;
     const TEST_INPUT: &str = "162,817,812

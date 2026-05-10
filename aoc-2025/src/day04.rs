@@ -1,7 +1,7 @@
 use aoc_lib::char_match;
-use aoc_lib::solution::Solution;
 use aoc_lib::grid::{Grid, GridPosition};
 use aoc_lib::parser::Parser;
+use aoc_lib::solution::Solution;
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub enum Square {
@@ -57,8 +57,9 @@ impl Solution for Sol {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use aoc_lib::solution::{check_part1, check_part2};
+
+    use super::*;
 
     const TEST_INPUT: &str = "..@@.@@@@.
 @@@.@.@.@@
