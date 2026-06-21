@@ -22,18 +22,9 @@ crate (e.g. `aoc-2026`), implementing the `AOCYear` trait, and registering it in
 
 ### `aoc-lib` - Shared Utilities
 
-A purpose-built library of reusable primitives that eliminates boilerplate across solutions:
-
-| Module       | Contents                                                                                                             |
-|--------------|----------------------------------------------------------------------------------------------------------------------|
-| `parser`     | Composable parser combinators (`map`, `and_then`, `split`, `lines`, `chars`, …) for clean, declarative input parsing |
-| `grid`       | Generic 2D grid with typed cell values, neighbour traversal, and position arithmetic                                 |
-| `graph`      | Directed/undirected graph with DAG path-counting                                                                     |
-| `geometry`   | 3D point types and closest-pair algorithms                                                                           |
-| `algebra`    | Gaussian elimination over GF(2), matrix transpose                                                                    |
-| `arithmetic` | Digit utilities                                                                                                      |
-| `range`      | Integer range with overlap, merge, and iteration                                                                     |
-| `union_find` | Union-Find with size tracking                                                                                        |
+A library of reusable primitives that eliminates boilerplate across solutions. It includes a custom parser combinator
+framework, generic grid and graph types, geometric algorithms, linear algebra utilities, and various other data
+structures that recur across puzzles.
 
 ### Performance
 
