@@ -34,7 +34,7 @@ impl Solution for Sol {
             .lines()
     }
 
-    fn part1(&self, actions: &Self::Parsed) -> String {
+    fn part1(&self, actions: &Self::Parsed) -> Option<String> {
         let mut result = 0;
         let mut curr = STARTING_NUMBER;
         for action in actions {
@@ -48,10 +48,10 @@ impl Solution for Sol {
                 result += 1;
             }
         }
-        result.to_string()
+        Some(result.to_string())
     }
 
-    fn part2(&self, actions: &Self::Parsed) -> String {
+    fn part2(&self, actions: &Self::Parsed) -> Option<String> {
         let mut result = 0;
         let mut curr = STARTING_NUMBER;
         let mut was_zero = false;
@@ -73,7 +73,7 @@ impl Solution for Sol {
             }
             was_zero = curr == 0;
         }
-        result.to_string()
+        Some(result.to_string())
     }
 }
 

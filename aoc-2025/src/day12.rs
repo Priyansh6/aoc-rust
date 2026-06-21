@@ -266,7 +266,7 @@ impl Solution for Sol {
     /// NOTE: The below solution only works if `2 * SHAPE_LENGTH ^ 2 <= 32`.
     /// It only works for square shapes with at least one block full in each wall.
     /// It uses a recursive algorithm, ideally there are less than a thousand total shapes to place.
-    fn part1(&self, (shapes, regions): &Self::Parsed) -> String {
+    fn part1(&self, (shapes, regions): &Self::Parsed) -> Option<String> {
         let mut num_valid = 0;
         let shape_masks = construct_shape_masks(shapes);
 
@@ -286,17 +286,13 @@ impl Solution for Sol {
             }
         }
 
-        num_valid.to_string()
-    }
-
-    fn part2(&self, _devices: &Self::Parsed) -> String {
-        unimplemented!()
+        Some(num_valid.to_string())
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use aoc_lib::solution::{check_part1, check_part2};
+    use aoc_lib::solution::check_part1;
 
     use super::*;
 
@@ -336,17 +332,6 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        use std::time::Instant;
-
-        let start = Instant::now();
         check_part1(&Sol, TEST_INPUT, "2");
-        let elapsed = start.elapsed();
-
-        println!("test_part1 took {elapsed:?}");
-    }
-
-    #[test]
-    fn test_part2() {
-        check_part2(&Sol, TEST_INPUT, "2");
     }
 }

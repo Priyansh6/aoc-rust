@@ -133,7 +133,7 @@ impl Solution for Sol {
         .lines()
     }
 
-    fn part1(&self, machines: &Self::Parsed) -> String {
+    fn part1(&self, machines: &Self::Parsed) -> Option<String> {
         let mut sum_presses = 0;
         for (indicators, schematics, _) in machines {
             let schematics = expand_schematics(schematics, indicators.len());
@@ -142,16 +142,16 @@ impl Solution for Sol {
                 .min()
                 .unwrap();
         }
-        sum_presses.to_string()
+        Some(sum_presses.to_string())
     }
 
-    fn part2(&self, machines: &Self::Parsed) -> String {
+    fn part2(&self, machines: &Self::Parsed) -> Option<String> {
         let mut sum_presses = 0;
         for (_, schematics, requirements) in machines {
             let schematics_bool = expand_schematics(schematics, requirements.len());
             sum_presses += min_presses_for_joltages(requirements, &schematics_bool, schematics);
         }
-        sum_presses.to_string()
+        Some(sum_presses.to_string())
     }
 }
 

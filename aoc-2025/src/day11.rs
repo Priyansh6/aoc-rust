@@ -40,16 +40,16 @@ impl Solution for Sol {
         .lines()
     }
 
-    fn part1(&self, devices: &Self::Parsed) -> String {
+    fn part1(&self, devices: &Self::Parsed) -> Option<String> {
         let (graph, node_to_index) = construct_graph_and_index_map(devices);
 
         let from_i = node_to_index["you"];
         let to_i = node_to_index["out"];
 
-        graph.num_paths_dag(from_i, to_i).to_string()
+        Some(graph.num_paths_dag(from_i, to_i).to_string())
     }
 
-    fn part2(&self, devices: &Self::Parsed) -> String {
+    fn part2(&self, devices: &Self::Parsed) -> Option<String> {
         let (graph, node_to_index) = construct_graph_and_index_map(devices);
 
         let from_i = node_to_index["svr"];
@@ -57,9 +57,11 @@ impl Solution for Sol {
         let dac_i = node_to_index["dac"];
         let fft_i = node_to_index["fft"];
 
-        graph
-            .num_paths_through_dag(from_i, to_i, &[dac_i, fft_i])
-            .to_string()
+        Some(
+            graph
+                .num_paths_through_dag(from_i, to_i, &[dac_i, fft_i])
+                .to_string(),
+        )
     }
 }
 

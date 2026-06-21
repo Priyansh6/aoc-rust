@@ -86,7 +86,7 @@ impl Solution for Sol {
         Grid::parser(parse_square)
     }
 
-    fn part1(&self, manifold: &Self::Parsed) -> String {
+    fn part1(&self, manifold: &Self::Parsed) -> Option<String> {
         let source_pos = manifold.find(&Square::Source).unwrap();
 
         let mut beam_pos = HashSet::from([source_pos]);
@@ -98,10 +98,10 @@ impl Solution for Sol {
             }
             beam_pos = next_beam_pos;
         }
-        collisions.to_string()
+        Some(collisions.to_string())
     }
 
-    fn part2(&self, manifold: &Self::Parsed) -> String {
+    fn part2(&self, manifold: &Self::Parsed) -> Option<String> {
         let source_pos = manifold.find(&Square::Source).unwrap();
 
         let mut beam_possibilities = HashMap::from([(source_pos, 1)]);
@@ -112,7 +112,7 @@ impl Solution for Sol {
             }
             beam_possibilities = next_beam_possibilities;
         }
-        beam_possibilities.values().sum::<u64>().to_string()
+        Some(beam_possibilities.values().sum::<u64>().to_string())
     }
 }
 

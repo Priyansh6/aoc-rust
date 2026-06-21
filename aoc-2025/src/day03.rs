@@ -40,12 +40,12 @@ impl Solution for Sol {
         parser::digit::<10>.chars().lines()
     }
 
-    fn part1(&self, digit_lines: &Self::Parsed) -> String {
-        sum_of_largest_joltages(digit_lines, 2).to_string()
+    fn part1(&self, digit_lines: &Self::Parsed) -> Option<String> {
+        Some(sum_of_largest_joltages(digit_lines, 2).to_string())
     }
 
-    fn part2(&self, digit_lines: &Self::Parsed) -> String {
-        sum_of_largest_joltages(digit_lines, 12).to_string()
+    fn part2(&self, digit_lines: &Self::Parsed) -> Option<String> {
+        Some(sum_of_largest_joltages(digit_lines, 12).to_string())
     }
 }
 

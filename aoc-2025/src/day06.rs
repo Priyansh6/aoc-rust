@@ -34,17 +34,17 @@ impl Solution for Sol {
         parser::rsplit_once(num_grid_lines_parser, operators_parser, "\n")
     }
 
-    fn part1(&self, (num_grid_lines, operators): &Self::Parsed) -> String {
+    fn part1(&self, (num_grid_lines, operators): &Self::Parsed) -> Option<String> {
         let num_grid = parser::from_str::<u64>
             .split_whitespace()
             .into_each()
             .parse(num_grid_lines.iter().map(String::as_str))
             .unwrap();
         let num_groups = algebra::transpose(num_grid);
-        calculate_sum(operators, &num_groups).to_string()
+        Some(calculate_sum(operators, &num_groups).to_string())
     }
 
-    fn part2(&self, (num_grid_lines, operators): &Self::Parsed) -> String {
+    fn part2(&self, (num_grid_lines, operators): &Self::Parsed) -> Option<String> {
         let char_grid = parser::identity
             .chars()
             .into_each()
@@ -67,7 +67,7 @@ impl Solution for Sol {
             })
             .collect();
 
-        calculate_sum(operators, &num_groups).to_string()
+        Some(calculate_sum(operators, &num_groups).to_string())
     }
 }
 

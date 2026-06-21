@@ -16,7 +16,7 @@ impl Solution for Sol {
         parser::split_pair(range_parser, id_parser, "\n\n")
     }
 
-    fn part1(&self, (ranges, ids): &Self::Parsed) -> String {
+    fn part1(&self, (ranges, ids): &Self::Parsed) -> Option<String> {
         let mut fresh_ids = 0;
         for id in ids {
             for range in ranges {
@@ -26,10 +26,10 @@ impl Solution for Sol {
                 }
             }
         }
-        fresh_ids.to_string()
+        Some(fresh_ids.to_string())
     }
 
-    fn part2(&self, (ranges, _): &Self::Parsed) -> String {
+    fn part2(&self, (ranges, _): &Self::Parsed) -> Option<String> {
         let mut ranges = ranges.clone();
         ranges.sort_by_key(|range| *range.start());
 
@@ -45,11 +45,13 @@ impl Solution for Sol {
             }
         }
 
-        merged_ranges
-            .iter()
-            .map(Range::num_elems)
-            .sum::<u64>()
-            .to_string()
+        Some(
+            merged_ranges
+                .iter()
+                .map(Range::num_elems)
+                .sum::<u64>()
+                .to_string(),
+        )
     }
 }
 

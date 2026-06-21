@@ -16,35 +16,37 @@ impl<const NUM_CONNECTIONS: usize> Solution for Sol<NUM_CONNECTIONS> {
         parser::from_str::<Point3<f64>>.lines()
     }
 
-    fn part1(&self, points: &Self::Parsed) -> String {
+    fn part1(&self, points: &Self::Parsed) -> Option<String> {
         let pairs = geometry::k_closest_pair_indices(points, NUM_CONNECTIONS);
         let mut union_find = UnionFind::new(points.len());
         for (left, right) in pairs {
             union_find.union(left, right);
         }
 
-        (0..points.len())
-            .map(|i| union_find.find(i))
-            .unique()
-            .collect::<Vec<_>>()
-            .into_iter()
-            .map(|root| union_find.get_size(root))
-            .k_largest(3)
-            .product::<usize>()
-            .to_string()
+        Some(
+            (0..points.len())
+                .map(|i| union_find.find(i))
+                .unique()
+                .collect::<Vec<_>>()
+                .into_iter()
+                .map(|root| union_find.get_size(root))
+                .k_largest(3)
+                .product::<usize>()
+                .to_string(),
+        )
     }
 
-    fn part2(&self, points: &Self::Parsed) -> String {
+    fn part2(&self, points: &Self::Parsed) -> Option<String> {
         let pairs = geometry::closest_pair_indices(points);
         let mut union_find = UnionFind::new(points.len());
 
         for (left, right) in pairs {
             union_find.union(left, right);
             if union_find.get_size(left) == points.len() {
-                return (points[left].x() * points[right].x()).to_string();
+                return Some((points[left].x() * points[right].x()).to_string());
             }
         }
-        "COULD NOT FIND ANSWER".to_string()
+        None
     }
 }
 

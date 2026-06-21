@@ -84,17 +84,19 @@ impl Solution for Sol {
             .lines()
     }
 
-    fn part1(&self, tiles: &Self::Parsed) -> String {
-        tiles
-            .iter()
-            .tuple_combinations()
-            .map(|(t1, t2)| t1.inclusive_rect_area(t2))
-            .max()
-            .unwrap()
-            .to_string()
+    fn part1(&self, tiles: &Self::Parsed) -> Option<String> {
+        Some(
+            tiles
+                .iter()
+                .tuple_combinations()
+                .map(|(t1, t2)| t1.inclusive_rect_area(t2))
+                .max()
+                .unwrap()
+                .to_string(),
+        )
     }
 
-    fn part2(&self, tiles: &Self::Parsed) -> String {
+    fn part2(&self, tiles: &Self::Parsed) -> Option<String> {
         let (horizontal_walls, vertical_walls): (Vec<_>, _) = tiles
             .iter()
             .circular_tuple_windows()
@@ -122,7 +124,7 @@ impl Solution for Sol {
                 max_area = cmp::max(max_area, t1.inclusive_rect_area(t2));
             }
         }
-        max_area.to_string()
+        Some(max_area.to_string())
     }
 }
 

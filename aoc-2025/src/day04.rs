@@ -35,11 +35,11 @@ impl Solution for Sol {
         Grid::parser(parse_square)
     }
 
-    fn part1(&self, grid: &Self::Parsed) -> String {
-        get_accessible_paper_positions(grid).count().to_string()
+    fn part1(&self, grid: &Self::Parsed) -> Option<String> {
+        Some(get_accessible_paper_positions(grid).count().to_string())
     }
 
-    fn part2(&self, grid: &Self::Parsed) -> String {
+    fn part2(&self, grid: &Self::Parsed) -> Option<String> {
         let mut grid: Grid<Square> = grid.clone();
         let mut total_accessible_squares = 0;
         while let accessible_square_positions =
@@ -51,7 +51,7 @@ impl Solution for Sol {
             }
             total_accessible_squares += accessible_square_positions.len();
         }
-        total_accessible_squares.to_string()
+        Some(total_accessible_squares.to_string())
     }
 }
 

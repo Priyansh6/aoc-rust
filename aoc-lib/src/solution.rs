@@ -7,8 +7,12 @@ pub trait Solution {
 
     fn parser(&self) -> impl Parser<&str, Output = Self::Parsed>;
 
-    fn part1(&self, parsed: &Self::Parsed) -> String;
-    fn part2(&self, parsed: &Self::Parsed) -> String;
+    fn part1(&self, _parsed: &Self::Parsed) -> Option<String> {
+        None
+    }
+    fn part2(&self, _parsed: &Self::Parsed) -> Option<String> {
+        None
+    }
 }
 
 pub fn run_solution<S: Solution>(day: u8, input: &str, sol: &S) {
@@ -19,18 +23,24 @@ pub fn run_solution<S: Solution>(day: u8, input: &str, sol: &S) {
     println!("Parse: {:?}", start.elapsed());
 
     let start = Instant::now();
-    println!("Part 1: {} ({:?})", sol.part1(&parsed), start.elapsed());
+    match sol.part1(&parsed) {
+        Some(result) => println!("Part 1: {result} ({:?})", start.elapsed()),
+        None => println!("Part 1: not implemented"),
+    }
 
     let start = Instant::now();
-    println!("Part 2: {} ({:?})", sol.part2(&parsed), start.elapsed());
+    match sol.part2(&parsed) {
+        Some(result) => println!("Part 2: {result} ({:?})", start.elapsed()),
+        None => println!("Part 2: not implemented"),
+    }
 }
 
 pub fn check_part1<S: Solution>(sol: &S, input: &str, expected: &str) {
     let parsed = sol.parser().parse(input).unwrap();
-    assert_eq!(sol.part1(&parsed), expected);
+    assert_eq!(sol.part1(&parsed).as_deref(), Some(expected));
 }
 
 pub fn check_part2<S: Solution>(sol: &S, input: &str, expected: &str) {
     let parsed = sol.parser().parse(input).unwrap();
-    assert_eq!(sol.part2(&parsed), expected);
+    assert_eq!(sol.part2(&parsed).as_deref(), Some(expected));
 }

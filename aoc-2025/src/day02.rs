@@ -25,7 +25,7 @@ impl Solution for Sol {
         parser::from_str::<Range<IdType>>.split(",")
     }
 
-    fn part1(&self, ranges: &Self::Parsed) -> String {
+    fn part1(&self, ranges: &Self::Parsed) -> Option<String> {
         let mut result = 0;
         for range in ranges {
             result += range
@@ -39,10 +39,10 @@ impl Solution for Sol {
                 })
                 .sum::<IdType>();
         }
-        result.to_string()
+        Some(result.to_string())
     }
 
-    fn part2(&self, ranges: &Self::Parsed) -> String {
+    fn part2(&self, ranges: &Self::Parsed) -> Option<String> {
         let mut result = 0;
         for range in ranges {
             result += range
@@ -55,7 +55,7 @@ impl Solution for Sol {
                 })
                 .sum::<IdType>();
         }
-        result.to_string()
+        Some(result.to_string())
     }
 }
 
