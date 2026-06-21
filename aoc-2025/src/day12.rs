@@ -6,8 +6,7 @@ use aoc_lib::solution::Solution;
 use aoc_lib::{char_match, parser};
 use itertools::Itertools;
 
-pub const SHAPE_LENGTH: u32 = 3;
-pub const SHAPE_LENGTH_USIZE: usize = SHAPE_LENGTH as usize;
+pub const SHAPE_LENGTH: usize = 3;
 
 struct ShapePermutation {
     mask: u32,
@@ -18,11 +17,11 @@ struct ShapePermutation {
 /// E.g. for `SHAPE_LENGTH = 3`, the mask is `0b00_111_00_111_00_111` where underscores are for
 /// illustration purposes, separating the "padding" unnecessary bits from the used bits
 const fn grid_cell_mask() -> u32 {
-    let row_width = 2 * SHAPE_LENGTH_USIZE - 1;
-    let row_bits = (1 << SHAPE_LENGTH_USIZE) - 1;
+    let row_width = 2 * SHAPE_LENGTH - 1;
+    let row_bits = (1 << SHAPE_LENGTH) - 1;
     let mut mask = 0u32;
     let mut row = 0;
-    while row < SHAPE_LENGTH_USIZE {
+    while row < SHAPE_LENGTH {
         mask |= row_bits << (row * row_width);
         row += 1;
     }
@@ -33,18 +32,17 @@ const fn shift_left(mask: u32, n: u32) -> u32 {
     (mask << n) & grid_cell_mask()
 }
 const fn shift_up(mask: u32, n: u32) -> u32 {
-    mask << (n * (2 * SHAPE_LENGTH - 1)) & grid_cell_mask()
+    mask << (n * (2 * SHAPE_LENGTH - 1) as u32) & grid_cell_mask()
 }
 
 const fn shift_right(mask: u32, n: u32) -> u32 {
     (mask >> n) & grid_cell_mask()
 }
 const fn shift_down(mask: u32, n: u32) -> u32 {
-    mask >> (n * (2 * SHAPE_LENGTH - 1))
+    mask >> (n * (2 * SHAPE_LENGTH - 1) as u32)
 }
 
-const TOP_LEFT_BIT: u32 =
-    1 << ((SHAPE_LENGTH_USIZE - 1) * (2 * SHAPE_LENGTH_USIZE - 1) + (SHAPE_LENGTH_USIZE - 1));
+const TOP_LEFT_BIT: u32 = 1 << ((SHAPE_LENGTH - 1) * (2 * SHAPE_LENGTH - 1) + (SHAPE_LENGTH - 1));
 
 /// Rotates the shape 90° clockwise.
 fn rotate(shape: &[Vec<bool>]) -> Vec<Vec<bool>> {
@@ -63,16 +61,16 @@ fn flip(shape: &[Vec<bool>]) -> Vec<Vec<bool>> {
 }
 
 fn construct_shape_mask(shape: &[Vec<bool>]) -> u32 {
-    let row_width = 2 * SHAPE_LENGTH_USIZE - 1;
+    let row_width = 2 * SHAPE_LENGTH - 1;
     let mut mask: u32 = 0;
     for (row, cols) in shape.iter().enumerate() {
         let mut row_mask: u32 = 0;
         for (col, cell) in cols.iter().enumerate() {
             if *cell {
-                row_mask |= 1 << (SHAPE_LENGTH_USIZE - 1 - col);
+                row_mask |= 1 << (SHAPE_LENGTH - 1 - col);
             }
         }
-        mask |= row_mask << ((SHAPE_LENGTH_USIZE - 1 - row) * row_width);
+        mask |= row_mask << ((SHAPE_LENGTH - 1 - row) * row_width);
     }
     mask
 }
@@ -111,28 +109,28 @@ fn construct_shape_masks(shapes: &[Vec<Vec<bool>>]) -> Vec<Vec<ShapePermutation>
 }
 
 fn toggle_shape(mask_grid: &mut Grid<u32>, pos: GridPosition, mask: u32) {
-    let l = SHAPE_LENGTH_USIZE.cast_signed();
-    for dr in -(l - 1)..l {
-        for dc in -(l - 1)..l {
-            let Some(y) = pos.y.checked_add_signed(dr) else {
+    let shape_length = SHAPE_LENGTH.cast_signed();
+    for d_row in -(shape_length - 1)..shape_length {
+        for d_col in -(shape_length - 1)..shape_length {
+            let Some(y) = pos.y.checked_add_signed(d_row) else {
                 continue;
             };
-            let Some(x) = pos.x.checked_add_signed(dc) else {
+            let Some(x) = pos.x.checked_add_signed(d_col) else {
                 continue;
             };
             if y >= mask_grid.height() || x >= mask_grid.width() {
                 continue;
             }
 
-            let shifted_h = if dc >= 0 {
-                shift_left(mask, dc.unsigned_abs() as u32)
+            let shifted_h = if d_col >= 0 {
+                shift_left(mask, d_col.unsigned_abs() as u32)
             } else {
-                shift_right(mask, dc.unsigned_abs() as u32)
+                shift_right(mask, d_col.unsigned_abs() as u32)
             };
-            let shifted = if dr >= 0 {
-                shift_up(shifted_h, dr.unsigned_abs() as u32)
+            let shifted = if d_row >= 0 {
+                shift_up(shifted_h, d_row.unsigned_abs() as u32)
             } else {
-                shift_down(shifted_h, dr.unsigned_abs() as u32)
+                shift_down(shifted_h, d_row.unsigned_abs() as u32)
             };
 
             mask_grid[GridPosition { x, y }] ^= shifted;
@@ -273,8 +271,8 @@ impl Solution for Sol {
         for ((cols, rows), shape_counts) in regions {
             let mut mask_grid: Grid<u32> = Grid::from_rows((0..*rows).map(|y| {
                 (0..*cols).map(move |x| {
-                    let right_overflow = (x + SHAPE_LENGTH_USIZE).saturating_sub(*cols) as u32;
-                    let down_overflow = (y + SHAPE_LENGTH_USIZE).saturating_sub(*rows) as u32;
+                    let right_overflow = (x + SHAPE_LENGTH).saturating_sub(*cols) as u32;
+                    let down_overflow = (y + SHAPE_LENGTH).saturating_sub(*rows) as u32;
                     (grid_cell_mask() ^ shift_left(grid_cell_mask(), right_overflow))
                         | (grid_cell_mask() ^ shift_up(grid_cell_mask(), down_overflow))
                 })
