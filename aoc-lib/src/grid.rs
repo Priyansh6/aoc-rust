@@ -33,7 +33,7 @@ impl<T> Grid<T> {
         }
     }
 
-    fn from_rows<I, J>(rows: I) -> Result<Self, ParseError>
+    pub fn from_rows<I, J>(rows: I) -> Result<Self, ParseError>
     where
         I: IntoIterator<Item = J>,
         J: IntoIterator<Item = T>,
@@ -88,8 +88,8 @@ impl<T> Grid<T> {
     }
 
     #[must_use]
-    pub const fn below(&self, pos: &GridPosition) -> Option<GridPosition> {
-        let new_y = pos.y + 1;
+    pub const fn below_n(&self, pos: &GridPosition, n: usize) -> Option<GridPosition> {
+        let new_y = pos.y + n;
         if new_y >= self.height {
             return None;
         }
@@ -97,19 +97,19 @@ impl<T> Grid<T> {
     }
 
     #[must_use]
-    pub const fn above(&self, pos: &GridPosition) -> Option<GridPosition> {
-        if pos.y == 0 {
+    pub const fn above_n(&self, pos: &GridPosition, n: usize) -> Option<GridPosition> {
+        if pos.y < n {
             return None;
         }
         Some(GridPosition {
             x: pos.x,
-            y: pos.y - 1,
+            y: pos.y - n,
         })
     }
 
     #[must_use]
-    pub const fn right(&self, pos: &GridPosition) -> Option<GridPosition> {
-        let new_x = pos.x + 1;
+    pub const fn right_n(&self, pos: &GridPosition, n: usize) -> Option<GridPosition> {
+        let new_x = pos.x + n;
         if new_x >= self.width {
             return None;
         }
@@ -117,19 +117,58 @@ impl<T> Grid<T> {
     }
 
     #[must_use]
-    pub const fn left(&self, pos: &GridPosition) -> Option<GridPosition> {
-        if pos.x == 0 {
+    pub const fn left_n(&self, pos: &GridPosition, n: usize) -> Option<GridPosition> {
+        if pos.x < n {
             return None;
         }
         Some(GridPosition {
-            x: pos.x - 1,
+            x: pos.x - n,
             y: pos.y,
         })
+    }
+
+    #[must_use]
+    pub const fn below(&self, pos: &GridPosition) -> Option<GridPosition> {
+        self.below_n(pos, 1)
+    }
+
+    #[must_use]
+    pub const fn above(&self, pos: &GridPosition) -> Option<GridPosition> {
+        self.above_n(pos, 1)
+    }
+
+    #[must_use]
+    pub const fn right(&self, pos: &GridPosition) -> Option<GridPosition> {
+        self.right_n(pos, 1)
+    }
+
+    #[must_use]
+    pub const fn left(&self, pos: &GridPosition) -> Option<GridPosition> {
+        self.left_n(pos, 1)
+    }
+
+    #[must_use]
+    pub const fn next(&self, pos: &GridPosition) -> Option<GridPosition> {
+        if let Some(p) = self.right(pos) {
+            Some(p)
+        } else if pos.y + 1 < self.height {
+            Some(GridPosition { x: 0, y: pos.y + 1 })
+        } else {
+            None
+        }
     }
 
     pub fn iter_enumerated(&self) -> impl Iterator<Item = (GridPosition, &T)> {
         self.cells.iter().enumerate().flat_map(|(y, row)| {
             row.iter()
+                .enumerate()
+                .map(move |(x, cell)| (GridPosition { x, y }, cell))
+        })
+    }
+
+    pub fn iter_enumerated_mut(&mut self) -> impl Iterator<Item = (GridPosition, &mut T)> {
+        self.cells.iter_mut().enumerate().flat_map(|(y, row)| {
+            row.iter_mut()
                 .enumerate()
                 .map(move |(x, cell)| (GridPosition { x, y }, cell))
         })
